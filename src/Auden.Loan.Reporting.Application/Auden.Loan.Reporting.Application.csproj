@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Auden.Loan.Reporting.Domain\Auden.Loan.Reporting.Domain.csproj" />
+    <ProjectReference Include="..\Auden.Loan.Reporting.Infrastructure\Auden.Loan.Reporting.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
