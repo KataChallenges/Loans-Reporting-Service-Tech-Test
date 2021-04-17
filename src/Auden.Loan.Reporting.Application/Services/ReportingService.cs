@@ -1,6 +1,8 @@
 ﻿using Auden.Loan.Reporting.Domain.Models;
 using Auden.Loan.Reporting.Infrastructure.Repositories;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Auden.Loan.Reporting.Application.Services
@@ -14,9 +16,15 @@ namespace Auden.Loan.Reporting.Application.Services
             _dataRepository = dataRepository;
         }
 
-        public Task<IList<LoanEntity>> GetLoansReport()
+        public async Task<IList<LoansReport>> GetLoansReport(string dataType)
         {
-            throw new System.NotImplementedException();
+            if (dataType == "textfile" || dataType == "database")
+            {
+                var results = dataType == "database" ? await _dataRepository.GetDataFromSql() : await _dataRepository.GetDataFromFile();
+
+                return results;
+            }
+            throw new Exception();
         }
     }
 }

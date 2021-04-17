@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Auden.Loan.Reporting.Application.Services;
+using Auden.Loan.Reporting.Infrastructure.Repositories;
 
 namespace Auden.Loan.Reporting.Api
 {
@@ -53,6 +54,7 @@ namespace Auden.Loan.Reporting.Api
         private void AddDependencies(IServiceCollection services)
         {
             services.AddSingleton<IReportingService, ReportingService>();
+            services.AddSingleton<IDataRepository, DataRepository>();
         }
 
     }

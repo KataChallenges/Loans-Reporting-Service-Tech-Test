@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.5" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="5.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Auden.Loan.Reporting.Domain\Auden.Loan.Reporting.Domain.csproj" />
     <ProjectReference Include="..\Auden.Loan.Reporting.Infrastructure\Auden.Loan.Reporting.Infrastructure.csproj" />
   </ItemGroup>

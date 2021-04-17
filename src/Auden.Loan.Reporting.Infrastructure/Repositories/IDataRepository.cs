@@ -9,7 +9,7 @@ namespace Auden.Loan.Reporting.Infrastructure.Repositories
 {
     public interface IDataRepository
     {
-        Task<IList<LoanEntity>> GetDataFromSql();
-        Task<IList<LoanEntity>> GetDataFromFile();
+        Task<IList<LoansReport>> GetDataFromSql();
+        Task<IList<LoansReport>> GetDataFromFile();
     }
 }

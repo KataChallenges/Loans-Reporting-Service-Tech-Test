@@ -7,6 +7,6 @@ namespace Auden.Loan.Reporting.Application.Services
 {
     public interface IReportingService
     {
-        Task<IList<LoanEntity>> GetLoansReport();
+        Task<IList<LoansReport>> GetLoansReport(string dataType);
     }
 }

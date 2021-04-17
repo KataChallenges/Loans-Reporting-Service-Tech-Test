@@ -3,6 +3,7 @@ using Auden.Loan.Reporting.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Auden.Loan.Reporting.Api.Controllers
@@ -20,14 +21,16 @@ namespace Auden.Loan.Reporting.Api.Controllers
             _reportingService = reportingService;
         }
 
-        [HttpGet]
-        public async Task<IList<LoanEntity>> Get()
+        [HttpGet("{dataType}")]
+        [Consumes("application/vnd.uk.co.auden.loans.database.aggregate.list-v1+json")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IList<LoansReport>))]
+        public async Task<IList<LoansReport>> GetRecords(string dataType)
         {
-            _logger.LogInformation($"Getting loans issued grouped by Amount.");
+            _logger.LogInformation($"Getting loans detail grouped by Amount using {nameof(dataType)}.");
 
-            var results = await _reportingService.GetLoansReport();
+            var results = await _reportingService.GetLoansReport(dataType.ToLower());
 
-            _logger.LogInformation($"{results.Count} of results are found.");
+            _logger.LogInformation($"{nameof(Report)} of results are found.");
 
             return results;
         }
