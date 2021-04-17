@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Auden.Loan.Reporting.Infrastructure.Repositories
@@ -18,34 +19,45 @@ namespace Auden.Loan.Reporting.Infrastructure.Repositories
             _logger = logger;
         }
 
-        public Task<IList<LoansReport>> GetDataFromFile()
+        public async Task<IList<LoansReport>> GetDataFromFile()
         {
             string[] records = File.ReadAllLines($"{Environment.CurrentDirectory}\\DataSource\\data.txt");
 
-            foreach (string line in records)
+            foreach (string record in records)
             {
-                var test = line;
+                var loanId = record.Substring(0, 19).Trim();
+                var customerId = record.Substring(20, 29).Trim();
+                var loanAmount = record.Substring(50, 10).Trim().TrimStart('0');
+                var createdDate = record.Substring(60, 8).Trim();
+                var item = new LoansReport()
+                {
+                    Amount = loanAmount != "" ? $"£{loanAmount}" : null,
+                    TotalRecords = 0
+                };
+                reportingList.Add(item);
             }
-            return null;
+            var results = reportingList.GroupBy(loan => loan.Amount)
+                        .Select(loan => new LoansReport()
+                        {
+                            Amount = loan.Key,
+                            TotalRecords = loan.Count()
+                        })
+                        .OrderBy(x => x.Amount);
+
+            return results.ToList();
         }
 
         public async Task<IList<LoansReport>> GetDataFromSql()
         {
-            string cs = $"Data Source=DataSource\\data.db;";
-
-            using var con = new SqliteConnection(cs);
-            con.Open();
-
-            //string stm = "SELECT SQLITE_VERSION()";
-            //using var cmd = new SqliteCommand(stm, con);
-            //string version = cmd.ExecuteScalar().ToString();
-
-            string query = "Select Amount, Count(Amount) as total from loans group by Amount;";
-            using var command = new SqliteCommand(query, con);
-            var reader = await command.ExecuteReaderAsync();
-            while (reader.Read())
+            try
             {
-                try
+                string connectionString = $"Data Source=DataSource\\data.db;";
+                var connection = new SqliteConnection(connectionString);
+                connection.Open();
+                string query = "Select Amount, Count(Amount) as total from loans where amount is not null group by Amount order by Amount;";
+                var command = new SqliteCommand(query, connection);
+                var reader = await command.ExecuteReaderAsync();
+                while (reader.Read())
                 {
                     var item = new LoansReport()
                     {
@@ -54,14 +66,12 @@ namespace Auden.Loan.Reporting.Infrastructure.Repositories
                     };
                     reportingList.Add(item);
                 }
-                catch (Exception exception)
-                {
-                    _logger.LogError(exception.Message, exception);
-                }
+                connection.Close();
             }
-
-            con.Close();
-
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.Message, exception);
+            }
 
             return reportingList;
         }
