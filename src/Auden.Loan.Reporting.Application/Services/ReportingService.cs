@@ -18,13 +18,15 @@ namespace Auden.Loan.Reporting.Application.Services
 
         public async Task<IList<LoansReport>> GetLoansReport(string dataType)
         {
-            if (dataType == "textfile" || dataType == "database")
+            if (dataType != "textfile" && dataType != "database")
             {
-                var results = dataType == "database" ? await _dataRepository.GetDataFromSql() : await _dataRepository.GetDataFromFile();
-
-                return results;
+                throw new Exception();
             }
-            throw new Exception();
+
+            var results = dataType == "database" ? await _dataRepository.GetDataFromSql() : await _dataRepository.GetDataFromFile();
+
+            return results;
+
         }
     }
 }
