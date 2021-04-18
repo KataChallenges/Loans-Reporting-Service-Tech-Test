@@ -1,6 +1,8 @@
 ﻿using Auden.Loan.Reporting.Domain.Models;
+using Auden.Loan.Reporting.Infrastructure.Database;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,16 +14,18 @@ namespace Auden.Loan.Reporting.Infrastructure.Repositories
     public class DataRepository : IDataRepository
     {
         private readonly ILogger<DataRepository> _logger;
+        private readonly IOptions<DataSourceSettings> _sourceConfig;
         private List<LoansReport> reportingList = new List<LoansReport>();
 
-        public DataRepository(ILogger<DataRepository> logger)
+        public DataRepository(ILogger<DataRepository> logger, IOptions<DataSourceSettings> sourceConfig)
         {
             _logger = logger;
+            _sourceConfig = sourceConfig;
         }
 
         public async Task<IList<LoansReport>> GetDataFromFile()
         {
-            string[] records = File.ReadAllLines($"{Environment.CurrentDirectory}\\DataSource\\data.txt");
+            string[] records = await File.ReadAllLinesAsync($"{Environment.CurrentDirectory}{_sourceConfig.Value.FileLocation}");
 
             foreach (string record in records)
             {
@@ -51,8 +55,7 @@ namespace Auden.Loan.Reporting.Infrastructure.Repositories
         {
             try
             {
-                string connectionString = $"Data Source=DataSource\\data.db;";
-                var connection = new SqliteConnection(connectionString);
+                var connection = new SqliteConnection(_sourceConfig.Value.DatabaseConnection);
                 connection.Open();
                 string query = "Select Amount, Count(Amount) as total from loans where amount is not null group by Amount order by Amount;";
                 var command = new SqliteCommand(query, connection);
@@ -71,6 +74,7 @@ namespace Auden.Loan.Reporting.Infrastructure.Repositories
             catch (Exception exception)
             {
                 _logger.LogError(exception.Message, exception);
+                throw new Exception("Something went wrong. Please check logs.");
             }
 
             return reportingList;

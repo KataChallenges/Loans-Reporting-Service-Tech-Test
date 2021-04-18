@@ -15,4 +15,17 @@
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Auden.Loans.Reporting.Service.Tests.Unit\Auden.Loans.Reporting.Service.Tests.Unit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="data.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

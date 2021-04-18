@@ -26,7 +26,6 @@ namespace Auden.Loan.Reporting.Application.Services
             var results = dataType == "database" ? await _dataRepository.GetDataFromSql() : await _dataRepository.GetDataFromFile();
 
             return results;
-
         }
     }
 }

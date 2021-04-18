@@ -1,11 +1,13 @@
+using Auden.Loan.Reporting.Application.Services;
+using Auden.Loan.Reporting.Infrastructure.Database;
+using Auden.Loan.Reporting.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Auden.Loan.Reporting.Application.Services;
-using Auden.Loan.Reporting.Infrastructure.Repositories;
+using System;
 
 namespace Auden.Loan.Reporting.Api
 {
@@ -23,6 +25,9 @@ namespace Auden.Loan.Reporting.Api
         {
 
             services.AddControllers();
+            services.AddLogging();
+            services.AddOptions().Configure<DataSourceSettings>(Configuration.GetSection("DataSource"));
+
             AddDependencies(services);
             services.AddSwaggerGen(c =>
             {
@@ -30,7 +35,9 @@ namespace Auden.Loan.Reporting.Api
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app,
+            IWebHostEnvironment env,
+            IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -49,10 +56,13 @@ namespace Auden.Loan.Reporting.Api
             {
                 endpoints.MapControllers();
             });
+
+            serviceProvider.GetService<IDatabaseContext>().Setup();
         }
 
         private void AddDependencies(IServiceCollection services)
         {
+            services.AddSingleton<IDatabaseContext, DatabaseContext>();
             services.AddSingleton<IReportingService, ReportingService>();
             services.AddSingleton<IDataRepository, DataRepository>();
         }
