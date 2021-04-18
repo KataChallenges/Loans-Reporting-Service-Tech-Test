@@ -1,4 +1,3 @@
-using System;
 using Xunit;
 
 namespace Auden.Loans.Reporting.Domain.Tests.Unit

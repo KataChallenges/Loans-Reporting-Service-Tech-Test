@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
-using System;
 using System.Linq;
 
 namespace Auden.Loan.Reporting.Infrastructure.Database

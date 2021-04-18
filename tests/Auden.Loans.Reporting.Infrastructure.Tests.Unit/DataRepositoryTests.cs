@@ -24,7 +24,7 @@ namespace Auden.Loans.Reporting.Infrastructure.Tests.Unit
         }
 
 
-         [Fact]
+        [Fact]
         public async Task GetDataFromSql_Returns_Correct_DataAsync()
         {
             var mockLogger = GetMockLogger<DataRepository>();

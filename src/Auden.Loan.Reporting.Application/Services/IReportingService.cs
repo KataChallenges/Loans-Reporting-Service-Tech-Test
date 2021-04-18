@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Auden.Loan.Reporting.Domain.Models;
+﻿using Auden.Loan.Reporting.Domain.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace Auden.Loan.Reporting.Application.Services
